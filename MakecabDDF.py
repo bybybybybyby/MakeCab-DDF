@@ -1,10 +1,19 @@
 import os
-'''
-    For the given path, get the List of all files in the directory tree 
-'''
 
 dirName = 'Test';
+output_file = 'Output_Test.ddf'
 
+def createHeader():
+    with open(output_file, "w") as source:    
+        header = r""";*** MakeCAB Directive file;
+    .OPTION EXPLICIT
+    .Set CabinetNameTemplate="TESThardcode.cab"
+    .Set DiskDirectory1="C:\BRIAN\Tools\Brian Tools\MakeCab DDF Directive File Creator\TestOutput"
+    .Set MaxDiskSize=0
+    .Set Cabinet=on
+    .Set Compress=on
+    """    
+        source.write(header)
 
 
 def getListOfFiles(dirName):
@@ -21,13 +30,15 @@ def getListOfFiles(dirName):
             allFiles = allFiles + getListOfFiles(fullPath)
         else:
             allFiles.append(fullPath)
-
-    print(*allFiles, sep = "\n")
     return allFiles
-
-
 
 
 # Get the list of all files in directory tree at given path
 listOfFiles = getListOfFiles(dirName)
 
+createHeader() # write header to top of new file ***TODO-make selectable paths
+
+with open(output_file, "a") as source:
+    for x in listOfFiles:
+        source.write("\"" + x + "\"\n")   # Output each filename between double quotes and add new line
+    
